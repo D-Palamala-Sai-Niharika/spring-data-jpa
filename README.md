@@ -41,3 +41,9 @@ Sort.by(propName)
   - Extends PagingandSortingRepository
   - Provides Methods such as flushing the persistence context and delete records in a batch
   - Querying methods return List's instead of Iterable’s
+
+## @Embeddable and @Embedded
+- used to embed the attributes of one class ( without creating any entity) and map them to an entity
+- **@Embeddable** - declare that a class will be embedded by other entities
+- **@Embedded** - used to embed a type into another entity
+- **@AttributeOverrides**, **@AttributeOverride** - override the column properties of embedded type

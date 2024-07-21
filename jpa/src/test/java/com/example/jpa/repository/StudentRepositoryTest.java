@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.example.jpa.entity.Guardian;
 import com.example.jpa.entity.Student;
 
 @SpringBootTest  // Using this to check data reflection in DB
@@ -29,10 +30,28 @@ class StudentRepositoryTest {
 		Student student = Student.builder()
 				.firstName("neha")
 				.lastName("Palamala")
-				.emailId("ne@gmail.com")
-				.guardianName("latha")
-				.guardianMobile("999999999")
-				.guardianEmail("latha@gmail.com")
+				.emailId("neha@gmail.com")
+				//.guardianName("latha")
+				//.guardianMobile("999999999")
+				//.guardianEmail("latha@gmail.com")
+				.build();
+		this.studentRepo.save(student);
+	}
+	
+	@Test
+	public void saveStudentWithGuardian() {
+		
+		Guardian guardian = Guardian.builder()
+				.email("bhargavi@gmail.com")
+				.name("bhargavi")
+				.mobile("8888888888")
+				.build();
+		
+		Student student = Student.builder()
+				.firstName("neha")
+				.lastName("Palamala")
+				.emailId("test@gmail.com")
+				.guardian(guardian)
 				.build();
 		this.studentRepo.save(student);
 	}

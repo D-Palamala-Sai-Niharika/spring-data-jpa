@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -51,9 +52,12 @@ public class Student {
 	)
 	private String emailId;
 	
-	private String guardianName;
-	private String guardianEmail;
-	private String guardianMobile;
+//	private String guardianName;
+//	private String guardianEmail;
+//	private String guardianMobile;
+	
+	@Embedded
+	private Guardian guardian;
 	
 	@Column(name="date_created")
 	@CreationTimestamp
