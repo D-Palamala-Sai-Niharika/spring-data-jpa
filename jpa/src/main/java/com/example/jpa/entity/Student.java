@@ -61,6 +61,7 @@ public class Student {
 	
 	@Column(name="date_created")
 	@CreationTimestamp
+    //@Temporal(TemporalType.TIMESTAMP)
 	private Date dateCreated;
 	
 	@Column(name="date_updated")
