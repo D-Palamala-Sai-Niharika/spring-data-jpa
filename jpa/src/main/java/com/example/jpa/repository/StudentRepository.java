@@ -3,6 +3,9 @@ package com.example.jpa.repository;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +16,9 @@ import com.example.jpa.entity.Student;
 import jakarta.transaction.Transactional;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
-
+	
+    // Derived query methods
+	
 	List<Student> findByFirstName(String firstName);
 	
 	List<Student> findByFirstNameContaining(String name);
@@ -26,7 +31,15 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 	
 	List<Student> findByDateCreatedBetween(Date start, Date end);
 	
+	// Paging and Sorting
 	
+	Page<Student> findByLastNameContaining(String name, Pageable pageable); // returns page object
+	
+	List<Student> findByLastNameContaining(String name, Sort sort);
+	
+	
+	//List<Student> findAll(Sort.by("grade").ascending());
+
 	// JPQL
 	@Query("select s from Student s where s.emailId = ?1")
 	Student findByEmailAddress(String emailId);  //can give any name
@@ -43,11 +56,11 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 	@Query(value="select * from tbl_students s where s.email_address= ?1", nativeQuery=true)
 	Student findByEmailAddressNative(String emailId);
 	
-	// JPQL
+	// Query Param - JPQL
 	@Query("select s from Student s where s.emailId = :email")
 	Student findByEmailAddressParam(@Param("email") String emailId); 
 		
-	// Native Query
+	// Query Param -Native Query 
 	@Query(value="select * from tbl_students s where s.email_address= :email", nativeQuery=true)
 	Student findByEmailAddressNativeParam(@Param("email") String emailId);
 	
@@ -60,6 +73,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 	@Transactional
 	@Query(value="update tbl_students set first_name= :name where email_address= :email", nativeQuery=true)
 	int updateStudentFirstNameWithEmailAddressParam(@Param("email") String emailId, @Param("name") String firstName);
-	
+
 	
 }

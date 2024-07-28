@@ -9,6 +9,66 @@
   - Extends Repository
   - provides CRUD functions
   - **Optional<T>** findById(ID primaryKey); - Optional return type basically forces to add exception explicitly. That is why you get error when you do not write orElseThrow for findById(id) method. To know more about use of Optional : https://www.perplexity.ai/search/optional-return-type-in-jpa-us-HkbMPqSES_G2IEfNRKkf8A 
+
+- PagingAndSortingRepository
+  - Extends CrudRepository
+  - provides methods to do pagination and sort records
+  - https://www.bezkoder.com/spring-boot-pagination-sorting-example/
+  - https://www.perplexity.ai/search/requestparam-pathvariable-requ-id.VW2rdRIC3eKQKn2.l3Q 
+  - Pagination
+    - **Page<T> findAll(Pageble pageable);** - returns page of entities
+    - Pageable object with properties - Page size, Current page number
+    - Pageable objects using PageRequest class which implements Pageable interface: **Pageable paging = PageRequest.of(page, size, sort);**
+    - Returns the page object . Page<T> object  gives the details like list of elements, total elements, total pages
+    - page number starts from 0
+    - **getContent()** method to get all the elements - return list 
+    - **getNumberOfElements()** method to get number of elements of the respective get content
+    - **getTotalElements()** method to get tatal number of entities/elements in db
+    - **getTotalPages()** method to get total number of pages
+    - **getNumber()** method to get current page number
+  - Sorting
+     - **Iterable<T> findAll(Sort sort);**
+     - Sort Object with the Property on Which the sorting is to be done
+     - Sort.by(propName), Sort.by(propName).descending()
+     - https://www.baeldung.com/spring-data-sorting 
+
+ ```
+Ex : Pageable firstPageWithThreeRecords = PageRequest.of(page:1,size:3);
+     List<User> users=userRepo.findAll(firstPageWithThreeRecords).getContent();
+     long elementsNumber = userRepo.findAll(firstPageWithThreeRecords).getNumberOfElements();
+     long totalElements = userRepo.findAll(firstPageWithThreeRecords).getTotalElements();
+     long totalPages = userRepo.findAll(firstPageWithThreeRecords).getTotalPages();
+```
+```
+Ex: Sort sort = Sort.by("grade").ascending();
+    // Sort.by("grade").descending()
+    List<Student> students=studentRepo.findAll(sort);
+    
+```
+```
+Ex:  Pageable sortByAge = PageRequest.of(page:1,size:3, Sort.by(age));
+     Pageable sortByTitleAndDescription = PageRequest.of(page:1,size:3, Sort.by(title).and(Sort.by(description));
+     // sort by multiple parameters
+     Pageable sortByTitleAndDescription = PageRequest.of(page:1,size:3, Sort.by(title).descending().and(Sort.by(description));
+
+     Page findBytitleContaining("da", Pageable pageable);
+     Pageable findBytitleContaining = PageRequest.of(1, 2 , Sort.by(desc));
+     List<User> users=userRepo.findAll(findBytitleContaining.getContent());
+     Controller:
+     @GetMapping("/tutorials")
+     public ResponseEntity<Map<String, Object>> getAllTutorialsPage(
+     @RequestParam(required = false) String title,
+     @RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "3") int size,
+     @RequestParam(defaultValue = "id,desc") String[] sort){//code}
+
+```
+  
+- JpaRepository
+  - Extends PagingandSortingRepository
+  - Provides Methods such as flushing the persistence context and delete records in a batch
+  - Querying methods return List's instead of Iterable’s
+
  ```
 <S extends T> S save(S entity); 
 <S extends T> Iterable<S> saveAll(Iterable<S> entities);
@@ -23,25 +83,6 @@ void deleteAllById(Iterable<? extends ID> ids);
 void delete(Iterable<? extends T> entities);
 void deleteAll();
 ```
-
-- PagingAndSortingRepository
-  - Extends CrudRepository
-  - provides methods to do pagination and sort records
- ```
-findAll(Pageable pageable)
-Pageable object with following properties 
-Page size
-Current page number
-Sorting
-findAll(Sort sort)
-Sort Object with the Property on Which the sorting is to be done
-Sort.by(propName)
-```
-- JpaRepository
-  - Extends PagingandSortingRepository
-  - Provides Methods such as flushing the persistence context and delete records in a batch
-  - Querying methods return List's instead of Iterable’s
-
 ## @Embeddable and @Embedded
 - used to embed the attributes of one class ( without creating any entity) and map them to an entity
 - **@Embeddable** - declare that a class will be embedded by other entities

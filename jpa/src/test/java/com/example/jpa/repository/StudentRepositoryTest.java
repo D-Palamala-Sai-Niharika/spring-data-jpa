@@ -11,9 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import com.example.jpa.entity.Guardian;
 import com.example.jpa.entity.Student;
+
+import org.springframework.data.domain.Pageable; // Correct import
+import org.springframework.data.domain.Sort;
 
 @SpringBootTest  // Using this to check data reflection in DB
 //@DataJpaTest  // ideally we shd be using datajpa test for repository - tests and flushes data so that DB doesn't impact
@@ -26,6 +31,8 @@ class StudentRepositoryTest {
 //	void test() {
 //		fail("Not yet implemented");
 //	}
+	
+	//save
 	
 	@Test
 	public void saveStudent() {
@@ -45,25 +52,30 @@ class StudentRepositoryTest {
 	public void saveStudentWithGuardian() {
 		
 		Guardian guardian = Guardian.builder()
-				.email("bhargavi@gmail.com")
-				.name("bhargavi")
-				.mobile("8888888888")
+				.email("bhar@gmail.com")
+				.name("gnanambha")
+				.mobile("9097999999")
 				.build();
 		
 		Student student = Student.builder()
-				.firstName("ishan")
-				.lastName("sethi")
-				.emailId("ishan@gmail.com")
+				.firstName("bhargavi")
+				.lastName("kailasani")
+				.emailId("bhargavi@gmail.com")
 				.guardian(guardian)
+				.grade(10)
 				.build();
 		this.studentRepo.save(student);
 	}
+	
+	//retrieve
 	
 	@Test
 	public void printAllStudents() {
 		List<Student> students =this.studentRepo.findAll();
 		System.out.println("Student=" + students);
 	}
+	
+	//derived query methods
 	
 	@Test
 	public void printStudentsByFirstName() {
@@ -145,4 +157,92 @@ class StudentRepositoryTest {
 		System.out.println("success=" + success);
 	}
 	
+	
+	// paging
+	
+	@Test
+	public void getElementsByPagination() {
+		Pageable firstPageWithThreeRecords = PageRequest.of(0, 3); // page number starts from 0
+		//Pageable secondPageWithFourRecords = PageRequest.of(1, 4);
+		
+		List<Student> studentsInFirstPageWithThreeRecords = this.studentRepo.findAll(firstPageWithThreeRecords).getContent();
+		long totalElements = this.studentRepo.findAll(firstPageWithThreeRecords).getTotalElements();
+		long numberOfElements = this.studentRepo.findAll(firstPageWithThreeRecords).getNumberOfElements();
+		long pageNumber = this.studentRepo.findAll(firstPageWithThreeRecords).getNumber();
+		long totalPages = this.studentRepo.findAll(firstPageWithThreeRecords).getTotalPages();
+		
+		System.out.println("getContent=" + studentsInFirstPageWithThreeRecords);
+		System.out.println("numberOfElements=" + numberOfElements);
+		System.out.println("totalElements=" + totalElements);
+		System.out.println("pageNumber=" + pageNumber);
+		System.out.println("totalPages=" + totalPages);
+		
+	}
+	
+	@Test
+	public void getElementsByLastNameConatiningPagination() {
+		Pageable records = PageRequest.of(0, 2);
+		//Pageable records = PageRequest.of(1, 2); 
+		List<Student> students = this.studentRepo.findByLastNameContaining("pal", records).getContent();
+		System.out.println("getContent=" + students);
+		
+	}
+	
+	//sorting 
+	
+	@Test
+	public void sortElementsByGrade() {
+		 //Sort sort =  Sort.by("grade").ascending();  // based on class properties . jpql considers class rather than tables
+		 Sort sort =  Sort.by("grade").descending();
+		 List<Student> students = this.studentRepo.findAll(sort);
+		 System.out.println("getContent=" + students + students.size());
+	}
+	
+	@Test
+	public void getElementsBySorting() {
+		 Sort sort =  Sort.by("firstName");  // based on class properties . jpql considers class rather than tables
+		 List<Student> students = this.studentRepo.findAll(sort);
+		 System.out.println("getContent=" + students + students.size());
+		
+	}
+	
+	@Test
+	public void getElementsByLastNameConatiningSorting() {
+		 Sort sort =  Sort.by("firstName");  // based on class properties . jpql considers class rather than tables
+		 List<Student> students = this.studentRepo.findByLastNameContaining("pal", sort);
+		 System.out.println("getContent=" + students + students.size());
+		
+	}
+
+	
+	@Test
+	public void sortElementsByGradeAndFirstName() {
+		 Sort sort =  Sort.by("firstName").and(Sort.by("grade"));  // based on class properties . jpql considers class rather than tables
+		 List<Student> students = this.studentRepo.findAll(sort);
+		 System.out.println("getContent=" + students + students.size());
+		
+	}
+	
+	//paging and sorting
+	
+	@Test
+	public void findAllPageable() {
+		//Pageable sortByGrade = PageRequest.of(0, 3,Sort.by("grade"));
+		
+		//Pageable sortByFirstNameDesc = PageRequest.of(0, 3,Sort.by("firstName"));
+		
+		Pageable sortByFirstNameAndGradeDesc = PageRequest.of(0, 3,Sort.by("grade").descending().and(Sort.by("firstName"))); 
+		
+		List<Student> students = this.studentRepo.findAll(sortByFirstNameAndGradeDesc).getContent();
+		System.out.println("getContent=" + students);
+	}
+	
+	@Test
+	public void getElementsByLastNameConatiningPaginationAndSorting() {
+		Pageable records = PageRequest.of(0, 2, Sort.by("grade"));
+		//Pageable records = PageRequest.of(1, 2); 
+		List<Student> students = this.studentRepo.findByLastNameContaining("pal", records).getContent();
+		System.out.println("getContent=" + students);
+		
+	}
 }

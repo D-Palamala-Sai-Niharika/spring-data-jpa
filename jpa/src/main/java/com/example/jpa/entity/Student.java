@@ -52,6 +52,8 @@ public class Student {
 	)
 	private String emailId;
 	
+	private long grade;
+	
 //	private String guardianName;
 //	private String guardianEmail;
 //	private String guardianMobile;
