@@ -43,7 +43,7 @@ Ex : Pageable firstPageWithThreeRecords = PageRequest.of(page:1,size:3);
 Ex: Sort sort = Sort.by("grade").ascending();
     // Sort.by("grade").descending()
     List<Student> students=studentRepo.findAll(sort);
-    
+
 ```
 ```
 Ex:  Pageable sortByAge = PageRequest.of(page:1,size:3, Sort.by(age));
@@ -132,3 +132,9 @@ you should consider class names and properties instead of table and column names
 - Referenced Side - bidirectional - just to get the refernce of other mapped entity details without any fk creation
   - @OneToOne(mappedBy="")
 - cascade - pass properties or permissions from parent to child (trying to access child without creating parent/ avoid data integrety issues)
+
+## Builder Pattern
+- used to initialize an object for complex constructors
+- To learn more about builder pattern :
+  - https://www.youtube.com/watch?v=4ff_KZdvJn8
+  - https://www.youtube.com/watch?v=zAByFmRs6No&t=638s
