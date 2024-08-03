@@ -30,7 +30,11 @@
      - **Iterable<T> findAll(Sort sort);**
      - Sort Object with the Property on Which the sorting is to be done
      - Sort.by(propName), Sort.by(propName).descending()
-     - https://www.baeldung.com/spring-data-sorting 
+     - https://www.baeldung.com/spring-data-sorting
+```
+Iterable<T> findAll(Sort sort);
+Page<T> findAll(Pageable pageable);
+```
 
  ```
 Ex : Pageable firstPageWithThreeRecords = PageRequest.of(page:1,size:3);
