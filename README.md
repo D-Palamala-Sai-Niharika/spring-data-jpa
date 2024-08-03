@@ -66,6 +66,8 @@ Ex:  Pageable sortByAge = PageRequest.of(page:1,size:3, Sort.by(age));
      @RequestParam(defaultValue = "3") int size,
      @RequestParam(defaultValue = "id,desc") String[] sort){//code}
 
+     https://www.perplexity.ai/search/requestparam-pathvariable-requ-id.VW2rdRIC3eKQKn2.l3Q 
+
 ```
   
 - JpaRepository
