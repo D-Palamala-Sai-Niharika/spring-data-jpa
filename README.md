@@ -8,7 +8,7 @@
 - CrudRepository
   - Extends Repository
   - provides CRUD functions
-  - **Optional<T>** findById(ID primaryKey); - Optional return type basically forces to add exception explicitly. That is why you get error when you do not write orElseThrow for findById(id) method. To know more about use of Optional : https://www.perplexity.ai/search/optional-return-type-in-jpa-us-HkbMPqSES_G2IEfNRKkf8A 
+  - **Optional<T>** findById(ID primaryKey); - Optional return type basically forces to add exception explicitly. That is why you get error when you do not write orElseThrow for findById(id) method. It is used for the columns that are uniquely identified i.e id(findById), email(findByEmail) that returns only 1 correponding list and may throw NullPointerException Else (ex:findByTitle) returning empty list doesn't throw NullPointerException. To know more about use of Optional : https://www.perplexity.ai/search/optional-return-type-in-jpa-us-HkbMPqSES_G2IEfNRKkf8A 
 
 - PagingAndSortingRepository
   - Extends CrudRepository
