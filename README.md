@@ -16,20 +16,21 @@
   - https://www.bezkoder.com/spring-boot-pagination-sorting-example/
   - https://www.perplexity.ai/search/requestparam-pathvariable-requ-id.VW2rdRIC3eKQKn2.l3Q 
   - Pagination
-    - **Page<T> findAll(Pageble pageable);** - returns page of entities
+    - **`Page<T> findAll(Pageble pageable);`** - returns page of entities
     - Pageable object with properties - Page size, Current page number
-    - Pageable objects using PageRequest class which implements Pageable interface: **Pageable paging = PageRequest.of(page, size, sort);**
-    - Returns the page object . Page<T> object  gives the details like list of elements, total elements, total pages
+    - Pageable objects using PageRequest class which implements Pageable interface: **`Pageable paging = PageRequest.of(page, size, sort);`**
+    - Returns the page object . **`Page<T>`** object that gives the details like list of elements, total elements, total pages
     - page number starts from 0
-    - **getContent()** method to get all the elements - return list 
-    - **getNumberOfElements()** method to get number of elements of the respective get content
-    - **getTotalElements()** method to get tatal number of entities/elements in db
-    - **getTotalPages()** method to get total number of pages
-    - **getNumber()** method to get current page number
+    - Additional required details to be sent to client as response : (7) **`pageNumber - getNumber(), pageSize - getSize(), numberOfElements - getNumberOfElements(), totalElements - long getTotalElements(), totalPages - getTotalPages(), lastPage - boolean isLast(), content - List<T> getcontent()`**. Page object has below methods :
+    - **`getContent()`** method to get all the elements - return list 
+    - **`getNumberOfElements()`** method to get number of elements of the respective get content
+    - **`getTotalElements()`** method to get tatal number of entities/elements in db
+    - **`getTotalPages()`** method to get total number of pages
+    - **`getNumber()`** method to get current page number
   - Sorting
-     - **Iterable<T> findAll(Sort sort);**
-     - Sort Object with the Property on Which the sorting is to be done
-     - Sort.by(propName), Sort.by(propName).descending()
+     - **`Iterable<T> findAll(Sort sort);`**
+     - Returns Sort Object with the Property on Which the sorting is to be done
+     - `Sort sort = Sort.by(propName);`, `Sort sort = Sort.by(propName).descending();`
      - https://www.baeldung.com/spring-data-sorting
 ```
 Iterable<T> findAll(Sort sort);
@@ -57,7 +58,7 @@ Ex:  Pageable sortByAge = PageRequest.of(page:1,size:3, Sort.by(age));
 
      Page findBytitleContaining("da", Pageable pageable);
      Pageable findBytitleContaining = PageRequest.of(1, 2 , Sort.by(desc));
-     List<User> users=userRepo.findAll(findBytitleContaining.getContent());
+     List<User> users=userRepo.findAll(findBytitleContaining).getContent();
      Controller:
      @GetMapping("/tutorials")
      public ResponseEntity<Map<String, Object>> getAllTutorialsPage(
@@ -67,6 +68,26 @@ Ex:  Pageable sortByAge = PageRequest.of(page:1,size:3, Sort.by(age));
      @RequestParam(defaultValue = "id,desc") String[] sort){//code}
 
      https://www.perplexity.ai/search/requestparam-pathvariable-requ-id.VW2rdRIC3eKQKn2.l3Q 
+```
+```
+
+@GetMapping(value="/posts",produces="application/json")
+	   public ResponseEntity<PostResponse> getAllPosts(
+			  @RequestParam(value="pageNumber", defaultValue="0", required=false) Integer pageNumber,
+			  @RequestParam(value="pageSize", defaultValue="10", required=false) Integer pageSize,
+			  @RequestParam(value="sortBy", defaultValue="postId", required=false)  String sortBy, //default value based on column name postId/title/...
+			  @RequestParam(value="sortDir", defaultValue="asc", required=false) String sortDir
+){
+		 PostResponse postResponse=this.postService.getAllPosts(pageNumber, pageSize, sortBy, sortDir);
+		 return ResponseEntity.ok(postResponse);
+}
+
+Page<T> pages=repo.findAll(Pageable pageable);
+Sort sort=Sort.by(columnName).ascending();
+Sort sort=sortDir.equalsIgnoreCase("asc")?Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
+pageable=PageRequest.of(pageNumber,pageSize,sort)
+//first sorts based on param and then returns details with page no & page size mentioned
+//pages - getContent(), getNumber(), getSize(), getNumberOfElements(), getTotalElements(), getTotalPages(), isLast()
 
 ```
   
